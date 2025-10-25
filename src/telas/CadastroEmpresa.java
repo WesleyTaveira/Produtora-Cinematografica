@@ -1,0 +1,437 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+package telas;
+
+import classes.*;
+import java.io.File;
+import enums.*;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author ionaa
+ */
+public class CadastroEmpresa extends javax.swing.JFrame {
+
+    BancoDeDados bd;
+    Empresa empresa;
+    Botao botao;
+
+    /**
+     * Creates new form CadastroEmpresa
+     */
+    private void novaEmpresa() {
+        if (!validaCampos()) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos", "erro", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+
+        if (validaEmpresa() != null) {
+            JOptionPane.showMessageDialog(null, "CNPJ já existente", "erro", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+        String nome = txtNome.getText();
+        String cnpj = txtCnpj.getText();
+        bd.getEmpresas().add(new Empresa(nome, cnpj));
+    }
+
+    private void editarEmpresa() {
+        if (!validaCampos()) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos", "erro", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+
+        Empresa e = validaEmpresa();
+        if (e == null) {
+            JOptionPane.showMessageDialog(null, "CNPJ não existente", "erro", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+
+        e.setNome(txtNome.getText());
+    }
+
+    private void pesquisarEmpresa() {
+        if (txtCnpj.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Preencha o CNPJ", "erro", JOptionPane.PLAIN_MESSAGE);
+        }
+
+        for (Empresa e : bd.getEmpresas()) {
+            if (e.getCnpj().equals(txtCnpj.getText())) {
+                txtNome.setText(e.getNome());
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(null, "CNPJ não existente", "erro", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private void limpaCampos() {
+        if (botao.equals(Botao.PROCURAR)) {
+            return;
+        }
+        txtNome.setText("");
+        txtCnpj.setText("");
+    }
+
+    private Empresa validaEmpresa() {
+        for (int i = 0; i < bd.getEmpresas().size(); i++) {
+            if (bd.getEmpresas().get(i).getCnpj().equals(txtCnpj.getText())) {
+                return bd.getEmpresas().get(i);
+            }
+        }
+        return null;
+
+    }
+
+    private void desabilitaBotoes() {
+        txtNome.setEnabled(false);
+        txtCnpj.setEnabled(false);
+        btnOk.setEnabled(false);
+        btnNovo.setEnabled(true);
+        btnEditar.setEnabled(true);
+        btnProcurar.setEnabled(true);
+        btnCancelar.setEnabled(false);
+
+    }
+
+    private void habilitaBotoesNovo() {
+        txtNome.setEnabled(true);
+        txtCnpj.setEnabled(true);
+        btnOk.setEnabled(true);
+        btnNovo.setEnabled(false);
+        btnEditar.setEnabled(false);
+        btnProcurar.setEnabled(false);
+        btnCancelar.setEnabled(true);
+    }
+
+    private void habilitaBotoesEditar() {
+        txtNome.setEnabled(true);
+        txtCnpj.setEnabled(true);
+        btnOk.setEnabled(true);
+        btnNovo.setEnabled(false);
+        btnEditar.setEnabled(false);
+        btnProcurar.setEnabled(false);
+        btnCancelar.setEnabled(true);
+    }
+
+    private void habilitaBotoesPesquisar() {
+        txtNome.setEnabled(false);
+        txtCnpj.setEnabled(true);
+        btnOk.setEnabled(true);
+        btnNovo.setEnabled(false);
+        btnEditar.setEnabled(false);
+        btnProcurar.setEnabled(false);
+        btnCancelar.setEnabled(true);
+    }
+
+    private boolean validaCampos() {
+        if (txtNome.getText().equals("") || txtCnpj.getText().equals("")) {
+
+            return false;
+        }
+        return true;
+    }
+
+    private void carregaTabela() {
+        DefaultTableModel modelo = new DefaultTableModel(new Object[]{"Nome", "CNPJ", "Quantidade contratos"}, 0);
+        for (Empresa e : bd.getEmpresas()) {
+            Object linha[] = new Object[]{e.getNome(), e.getCnpj(), Integer.toString(e.getContratos().size())};
+            modelo.addRow(linha);
+        }
+        tblEmpresas.setModel(modelo);
+    }
+
+    public CadastroEmpresa() {
+        initComponents();
+
+        File fileBd = new File(BancoDeDados.getFilePath());
+        if (fileBd.exists()) {
+            bd = BancoDeDados.readBancoDeDados();
+        } else {
+            bd = new BancoDeDados();
+            BancoDeDados.writeBancoDeDados(bd);
+        }
+
+        desabilitaBotoes();
+        carregaTabela();
+
+        botao = Botao.NONE;
+
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        lblNome = new javax.swing.JLabel();
+        lblCnpj = new javax.swing.JLabel();
+        txtNome = new javax.swing.JTextField();
+        txtCnpj = new javax.swing.JTextField();
+        btnNovo = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        btnProcurar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnOk = new javax.swing.JButton();
+        scrlEmpresas = new javax.swing.JScrollPane();
+        tblEmpresas = new javax.swing.JTable();
+        btnFilmes = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        lblNome.setText("Nome");
+
+        lblCnpj.setText("CNPJ");
+
+        btnNovo.setText("Novo");
+        btnNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovoActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+
+        btnProcurar.setText("Procurar");
+        btnProcurar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProcurarActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        btnOk.setText("OK");
+        btnOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOkActionPerformed(evt);
+            }
+        });
+
+        tblEmpresas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Nome", "CNPJ", "quantidade contratos"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tblEmpresas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblEmpresasMouseClicked(evt);
+            }
+        });
+        scrlEmpresas.setViewportView(tblEmpresas);
+
+        btnFilmes.setText("filmes");
+        btnFilmes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFilmesActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblNome, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                            .addComponent(lblCnpj, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtCnpj, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(34, 34, 34)
+                        .addComponent(btnOk))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnNovo)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEditar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnProcurar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCancelar))
+                    .addComponent(scrlEmpresas, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(31, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(btnFilmes)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(btnFilmes)
+                .addGap(20, 20, 20)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblNome)
+                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnOk))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblCnpj)
+                    .addComponent(txtCnpj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(51, 51, 51)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnNovo)
+                    .addComponent(btnEditar)
+                    .addComponent(btnProcurar)
+                    .addComponent(btnCancelar))
+                .addGap(50, 50, 50)
+                .addComponent(scrlEmpresas, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(38, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        desabilitaBotoes();
+        botao = Botao.NONE;
+        limpaCampos();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+        habilitaBotoesNovo();
+        botao = Botao.NOVO;
+        limpaCampos();
+    }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        habilitaBotoesEditar();
+        botao = Botao.EDITAR;
+        limpaCampos();
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnProcurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcurarActionPerformed
+        habilitaBotoesPesquisar();
+        botao = Botao.PROCURAR;
+        limpaCampos();
+    }//GEN-LAST:event_btnProcurarActionPerformed
+
+    private void tblEmpresasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEmpresasMouseClicked
+        int pos = tblEmpresas.getSelectedRow();
+        txtNome.setText((String) tblEmpresas.getValueAt(pos, 0));
+        txtCnpj.setText((String) tblEmpresas.getValueAt(pos, 1));
+
+    }//GEN-LAST:event_tblEmpresasMouseClicked
+
+    private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
+        if (botao.equals(Botao.NOVO)) {
+
+            novaEmpresa();
+
+        } else if (botao.equals(Botao.EDITAR)) {
+
+            editarEmpresa();
+
+        } else if (botao.equals(Botao.PROCURAR)) {
+
+            pesquisarEmpresa();
+
+        }
+        limpaCampos();
+        BancoDeDados.writeBancoDeDados(bd);
+        carregaTabela();
+        desabilitaBotoes();
+        botao = Botao.NONE;
+    }//GEN-LAST:event_btnOkActionPerformed
+
+    private void btnFilmesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilmesActionPerformed
+        dispose();
+        new CadastroFilme().setVisible(true);
+    }//GEN-LAST:event_btnFilmesActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(CadastroEmpresa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(CadastroEmpresa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(CadastroEmpresa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(CadastroEmpresa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new CadastroEmpresa().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnFilmes;
+    private javax.swing.JButton btnNovo;
+    private javax.swing.JButton btnOk;
+    private javax.swing.JButton btnProcurar;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblCnpj;
+    private javax.swing.JLabel lblNome;
+    private javax.swing.JScrollPane scrlEmpresas;
+    private javax.swing.JTable tblEmpresas;
+    private javax.swing.JTextField txtCnpj;
+    private javax.swing.JTextField txtNome;
+    // End of variables declaration//GEN-END:variables
+}
